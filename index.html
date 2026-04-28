@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FriOrg — Fagsystem for frivillige organisasjoner</title>
+<title>FriOrg — Fagsystemet for frivillige organisasjoner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
@@ -494,6 +494,363 @@
   }
 
   /* ============ RESPONSIVE ============ */
+  /* ============ SPECIFICATION ACCORDION ============ */
+  .spec-section-block {
+    position: relative;
+    z-index: 2;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+  }
+
+  .spec-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 100px 40px 120px;
+  }
+
+  .spec-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 64px;
+    align-items: end;
+  }
+
+  .spec-head h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .spec-head h2 em {
+    font-style: italic;
+    color: var(--brand);
+    font-weight: 400;
+  }
+  .spec-head .spec-head-side {
+    border-left: 1px solid var(--rule);
+    padding-left: 32px;
+    padding-bottom: 8px;
+  }
+  .spec-head-side p {
+    font-size: 16px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .spec-head-side .spec-head-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+
+  .spec-controls {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+  }
+  .spec-control {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  .spec-control:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .spec-control-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    margin-left: auto;
+  }
+
+  /* Chapter (top-level accordion) */
+  .spec-chapter {
+    border-top: 1px solid var(--rule);
+  }
+  .spec-chapter:last-child { border-bottom: 1px solid var(--rule); }
+
+  .spec-chapter-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 28px 0;
+    display: grid;
+    grid-template-columns: 80px 1fr auto 24px;
+    gap: 24px;
+    align-items: baseline;
+    transition: background 0.2s ease;
+  }
+  .spec-chapter-summary::-webkit-details-marker { display: none; }
+  .spec-chapter-summary:hover { background: rgba(15, 76, 129, 0.02); }
+
+  .spec-chapter-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .spec-chapter-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(22px, 2.4vw, 30px);
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 96;
+  }
+
+  .spec-chapter-meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .spec-chevron {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  .spec-chevron::before,
+  .spec-chevron::after {
+    content: '';
+    position: absolute;
+    background: var(--ink-muted);
+    transition: all 0.3s ease;
+  }
+  .spec-chevron::before {
+    width: 14px; height: 1px;
+    top: 11px; left: 5px;
+  }
+  .spec-chevron::after {
+    width: 1px; height: 14px;
+    top: 5px; left: 11px;
+  }
+  details[open] > summary .spec-chevron::after {
+    transform: rotate(90deg);
+    opacity: 0;
+  }
+  details[open] > summary .spec-chevron::before {
+    background: var(--brand);
+  }
+
+  .spec-chapter-body {
+    padding: 8px 0 40px 104px;
+    animation: spec-reveal 0.4s ease-out;
+  }
+
+  @keyframes spec-reveal {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .spec-intro {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  /* Section (nested accordion) */
+  .spec-section {
+    border-top: 1px solid var(--rule);
+  }
+  .spec-section:first-child { border-top: none; }
+
+  .spec-section-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    transition: color 0.2s ease;
+  }
+  .spec-section-summary::-webkit-details-marker { display: none; }
+  .spec-section-summary:hover { color: var(--brand); }
+
+  .spec-section-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 19px;
+    color: var(--ink-soft);
+    line-height: 1.3;
+  }
+  details[open] > .spec-section-summary .spec-section-title {
+    color: var(--brand);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .spec-section-summary .spec-chevron {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .spec-section-summary .spec-chevron::before {
+    width: 10px; top: 8px; left: 4px;
+  }
+  .spec-section-summary .spec-chevron::after {
+    height: 10px; top: 4px; left: 8px;
+  }
+
+  .spec-section-body {
+    padding: 4px 0 32px 0;
+    max-width: 760px;
+    animation: spec-reveal 0.3s ease-out;
+  }
+
+  /* Inline content within sections */
+  .spec-section-body p,
+  .spec-intro p {
+    font-family: var(--font-body);
+    font-size: 16.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+
+  .spec-h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 17px;
+    color: var(--ink);
+    margin: 22px 0 12px;
+    letter-spacing: -0.005em;
+  }
+
+  .spec-h4 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--accent);
+    margin: 18px 0 8px;
+  }
+
+  .spec-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+  }
+  .spec-list li {
+    position: relative;
+    padding: 6px 0 6px 24px;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .spec-list li::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 16px;
+    width: 8px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .spec-list li strong { color: var(--ink); font-weight: 600; }
+
+  .spec-callout {
+    background: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding: 18px 22px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .spec-callout-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: -0.005em;
+  }
+  .spec-callout p {
+    font-size: 15px;
+    margin-bottom: 8px;
+    color: var(--ink-soft);
+  }
+  .spec-callout p:last-child { margin-bottom: 0; }
+
+  .spec-table-wrap {
+    margin: 20px 0;
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .spec-table th {
+    background: var(--paper);
+    text-align: left;
+    padding: 12px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
+    border-bottom: 1px solid var(--rule);
+  }
+  .spec-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink-soft);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .spec-table tr:last-child td { border-bottom: none; }
+
+  /* Spec footer */
+  .spec-foot {
+    margin-top: 60px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .spec-foot a {
+    color: var(--brand);
+    text-decoration: none;
+    border-bottom: 1px solid var(--brand);
+    padding-bottom: 2px;
+  }
+
   @media (max-width: 880px) {
     .top-band-inner { padding: 14px 24px; flex-wrap: wrap; gap: 12px; }
     .top-band-left { gap: 14px; flex-wrap: wrap; }
@@ -529,6 +886,35 @@
     }
 
     .colophon { flex-direction: column; gap: 12px; align-items: flex-start; }
+
+    /* Spec accordion responsive */
+    .spec-inner { padding: 60px 24px 80px; }
+    .spec-head {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .spec-head .spec-head-side {
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding-left: 0;
+      padding-top: 24px;
+    }
+
+    .spec-chapter-summary {
+      grid-template-columns: 60px 1fr 24px;
+      gap: 14px;
+      padding: 22px 0;
+    }
+    .spec-chapter-meta { display: none; }
+    .spec-chapter-body { padding-left: 0; padding-right: 0; }
+    .spec-controls { flex-wrap: wrap; }
+    .spec-control-meta { width: 100%; margin-left: 0; }
+
+    .spec-foot {
+      flex-direction: column;
+      gap: 14px;
+      align-items: flex-start;
+    }
   }
 </style>
 </head>
@@ -540,10 +926,11 @@
     <div class="top-band-left">
       <strong>FRIORG / KONSEPT</strong>
       <span><span class="pulse-dot"></span>v1.0 · Apr 2026</span>
-      <span>Tøn / NO</span>
+      <span>FAGSYSTEMET FRIVILLIGHETEN TRENGER</span>
     </div>
     <div class="top-band-right">
       <span>Funksjonell spesifikasjon</span>
+      <span> | </span>
       <span>Interaktiv mockup</span>
     </div>
   </div>
@@ -578,16 +965,19 @@
     <div class="hero-side-text">Funksjonell spesifikasjon · 10 hovedkapitler · v1.0</div>
 
     <div class="hero-side-row">
-      <span class="key">Visninger i mockup</span>
+      <span class="key">Visningsflater i mockup</span>
       <span class="val">38</span>
     </div>
     <div class="hero-side-row">
-      <span class="key">Smart-funksjoner</span>
-      <span class="val">8 NYE</span>
+      <span class="key">Smartfunksjoner</span>
+      <span class="val">8</span>
     </div>
     <div class="hero-side-row">
       <span class="key">Status</span>
-      <span class="val">Konseptutkast</span>
+      <span class="val">KONSEPTUTKAST</span>
+    <div class="hero-side-row">
+      <span class="key">Versjon</span>
+      <span class="val">1.0</span>
     </div>
     <div class="hero-side-row">
       <span class="key">Plattform</span>
@@ -615,7 +1005,7 @@
   <div class="artifact-grid">
 
     <!-- SPEC -->
-    <a href="FriOrg_Spesifikasjon.docx" class="artifact" download>
+    <a href="#Hele spesifikasjonen, åpen for innsyn." class="artifact" download>
       <div class="artifact-tag">
         <span>● Dokument</span>
         <span class="num">01 / 02</span>
@@ -632,7 +1022,7 @@
       <div class="artifact-meta">
         <div>
           <div class="key">Format</div>
-          <div class="val">Word · .docx</div>
+          <div class="val">Nettsidedel · Word</div>
         </div>
         <div>
           <div class="key">Omfang</div>
@@ -649,7 +1039,7 @@
       </div>
 
       <div class="artifact-foot">
-        <span class="artifact-cta">Last ned dokument →</span>
+        <span class="artifact-cta">Gå til spesifikasjonen →</span>
         <svg class="artifact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <line x1="6" y1="18" x2="18" y2="6"/>
           <polyline points="9 6 18 6 18 15"/>
@@ -669,7 +1059,7 @@
       </h3>
 
       <p class="artifact-kicker">
-        Klikkbar prototype med 38 visninger — fra dashboard til vedtektsmotor og AI-assistent.
+        Klikkbar prototype med 38 visningsflater — fra dashboard til vedtektsmotor og AI-assistent.
       </p>
 
       <div class="artifact-meta">
@@ -678,7 +1068,7 @@
           <div class="val">HTML · single-file</div>
         </div>
         <div>
-          <div class="key">Visninger</div>
+          <div class="key">Visningsflater</div>
           <div class="val">38 sider · 8 nye</div>
         </div>
         <div>
@@ -702,6 +1092,1226 @@
 
   </div>
 </section>
+
+
+<!-- Section divider for spec -->
+<div class="section-rule" style="margin-top:60px">
+  <div class="section-rule-inner">
+    <span>§ 02 — Spesifikasjonen</span>
+    <span class="num">02</span>
+    <span>Klikk for å lese</span>
+  </div>
+</div>
+
+<!-- SPECIFICATION ACCORDION -->
+<section class="spec-section-block">
+  <div class="spec-inner">
+    <div class="spec-head">
+      <div>
+        <h2>Hele <em>spesifikasjonen</em>, åpen for innsyn.</h2>
+      </div>
+      <div class="spec-head-side">
+        <div class="spec-head-meta">v1.0 · 10 kap. · 45 delkapitler</div>
+        <p>Klikk på et kapittel for å åpne. Klikk på et delkapittel for å lese innholdet. Foretrekker du dokumentformat — last ned <a href="FriOrg_Spesifikasjon.docx" download style="color:var(--brand);border-bottom:1px solid var(--brand)">Word-versjonen</a>.</p>
+      </div>
+    </div>
+
+    <div class="spec-controls">
+      <button class="spec-control" onclick="expandAllSpec()">Åpne alt</button>
+      <button class="spec-control" onclick="collapseAllSpec()">Lukk alt</button>
+      <span class="spec-control-meta">Kapittel-overskrifter åpner og lukker — også delkapitler i hvert</span>
+    </div>
+
+    
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 00</span>
+        <span class="spec-chapter-title">Forord til versjon 1.0</span>
+        <span class="spec-chapter-meta">Innledning</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        <div class="spec-intro">  <p>Versjon 0.9 av denne spesifikasjonen beskrev FriOrg som et solid, integrert fagsystem på Microsoft 365 — et alternativ til dagens fragmenterte verktøyflora. Versjon 1.0 går et skritt videre. Etter en gjennomgang av konkurransebildet og brukernes faktiske smertepunkter har vi løftet ambisjonen fra «godt integrert system» til «strategisk plattform med reelle konkurransefortrinn».</p>
+  <p>De viktigste tilleggene i denne utgaven:</p>
+  <ul class="spec-list">
+    <li>Vedtektsmotor som leser organisasjonens egne vedtekter og validerer at vedtak, valg og innkallinger følger dem.</li>
+    <li>AI-assistent over saksarkivet med Microsoft Copilot — naturlig språk-søk, automatiske oppsummeringer, utkast til møtereferat og forslag til svar.</li>
+    <li>Frivillighetstimer og dugnadslogg med direkte kobling til Frifond-rapportering og søkbarhet.</li>
+    <li>Outlook-add-in som viser medlemskontekst sidestilt e-postene daglig leder mottar.</li>
+    <li>Arvtaker-modul som strukturerer overdragelse av verv — onboarding, sjekklister og tilgangsoverføring.</li>
+    <li>Sponsor- og giverdatabase med automatisk §6-50-rapportering til Skatteetaten og pipeline for storgivere.</li>
+    <li>Krise- og hendelseshåndtering med anonym varsling, audit-trail og eskalering — bygget for organisasjoner som driver leirer, idrett, helserelatert arbeid.</li>
+    <li>Multi-tenant for paraplyorganisasjoner, anonymisert benchmarking på tvers av kunder, og forberedelser for nordisk utvidelse.</li>
+  </ul>
+  <p>Disse tilleggene posisjonerer FriOrg som «neste generasjon», ikke «enda et medlemsregister». Vi er fortsatt åpne for diskusjon om prioritering og rekkefølge.</p></div>
+        
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 01</span>
+        <span class="spec-chapter-title">1. Innledning</span>
+        <span class="spec-chapter-meta">3 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">1.1 Bakgrunn og formål</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>FriOrg skal være et helhetlig fagsystem for frivillige og ideelle organisasjoner i Norge. Systemet samler funksjonalitet som i dag dekkes av et titalls løsrevne verktøy — medlemsregister, regnskap, kommunikasjon, arrangement, søknader — i én plattform som er tilpasset frivillig sektors særegne behov.</p>
+  <p>Mange organisasjoner sliter med fragmenterte løsninger som hverken snakker sammen eller speiler organisasjonenes virkelighet. Tillitsvalgte skifter, lokallag opprettes og legges ned, medlemmer melder seg inn og ut, og rapporteringskrav fra Frifond, Bufdir, Lotteritilsynet og Skatteetaten endrer seg. FriOrg skal gjøre det enklere å drive forening — fra det minste lokallaget til den største landsorganisasjonen.</p>
+  <p>Med versjon 1.0 av spesifikasjonen utvider vi ambisjonen. FriOrg skal ikke bare digitalisere det som finnes; vi skal løse smertepunkter konkurrentene ikke har rørt — vedtektsfortolkning, kunnskapsoverdragelse mellom tillitsvalgte, AI-assistert saksbehandling og direkte verdikobling mellom frivillig innsats og rapportering.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">1.2 Designprinsipper</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li><strong>Bygges p&aring; Microsoft 365: </strong>Utnytter eksisterende investeringer i Outlook, Teams, SharePoint, Power BI og Entra ID. FriOrg skal ikke duplisere det Microsoft allerede leverer &ndash; vi skal forsterke det.</li>
+              <li><strong>Skalerbart fra lite til stort:</strong> Et lokallag med 30 medlemmer og en landsorganisasjon med 50 000 skal kunne bruke samme system, med ulik konfigurasjon.</li>
+              <li><strong>Frivillig-vennlig:</strong> Tillitsvalgte er ikke IT-eksperter. Grensesnittet skal v&aelig;re selvforklarende, og standardoppgaver skal kunne l&oslash;ses uten oppl&aelig;ring.</li>
+              <li><strong>Personvernforsterket:</strong> GDPR-compliance er innebygd, ikke et tillegg. Slettefrister, samtykker og dataminimering er standardfunksjonalitet.</li>
+              <li><strong>Norsk regulatorisk kontekst:</strong> Direkte integrasjon med Br&oslash;nn&oslash;ysund, Altinn, Frifond, KORG og momskompensasjonsordningen.</li>
+              <li><strong>&Aring;pen og integrerbar:</strong> REST API og webhooks for tilkobling til andre systemer. App-marketplace lar tredjepartsutviklere bygge p&aring; FriOrg. Ingen &laquo;vendor lock-in&raquo;.</li>
+              <li><strong>AI-forsterket, ikke AI-erstattet:</strong> Microsoft Copilot er integrert i hele l&oslash;sningen, men menneskelig d&oslash;mmekraft styrer alle vedtak og kommunikasjon utad.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">1.3 Målgrupper</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>FriOrg har flere ulike brukergrupper med ulike behov. Spesifikasjonen tar utgangspunkt i følgende roller:</p>
+            <ul class="spec-list">
+              <li><strong>Daglig leder / generalsekret&aelig;r</strong> &ndash; overordnet drift, rapportering, &oslash;konomistyring, strategiske beslutninger.</li>
+              <li><strong>Organisasjonsr&aring;dgiver / administrasjon</strong> &ndash; l&oslash;pende medlemsh&aring;ndtering, fakturering, kommunikasjon, saksbehandling.</li>
+              <li><strong>Lokallagsleder (frivillig)</strong> &ndash; drift av eget lokallag, arrangement, medlemskontakt.</li>
+              <li><strong>Tillitsvalgt med spesifikt verv</strong> &ndash; likepersonkoordinator, &oslash;konomiansvarlig, ungdomsleder, brukermedvirker.</li>
+              <li><strong>Vanlig medlem</strong> &ndash; &laquo;Min side&raquo;, p&aring;melding, kontingent, kontaktinfo, samtykker.</li>
+              <li><strong>Eksterne s&oslash;kere og deltakere</strong> &ndash; ikke-medlemmer som melder seg p&aring; arrangement eller s&oslash;ker om medlemskap.</li>
+              <li><strong>Givere og sponsorer</strong> &ndash; privatpersoner og virksomheter som donerer eller st&oslash;tter prosjekt.</li>
+              <li><strong>Revisor og kontrollkomit&eacute;</strong> &ndash; eksterne kontrollorganer med begrenset, lese-tilgang.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 02</span>
+        <span class="spec-chapter-title">2. Arkitektur og plattform</span>
+        <span class="spec-chapter-meta">2 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">2.1 Microsoft 365 som fundament</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>FriOrg er bygget som en Microsoft 365-applikasjon. Det innebærer at organisasjonens egen tenant er hjemmebasen — data ligger i SharePoint og Dataverse, identitet håndteres av Entra ID, og kontorverktøyene Outlook, Word, Excel, Teams og OneNote er en integrert del av brukeropplevelsen.</p>
+  <p>Dette er en strategisk forutsetning, ikke en begrensning. Bygger man på M365 får man enterprise-grade infrastruktur (sikkerhet, lagring, tilgangsstyring, dokumentversjonering, samhandling) gratis i tilbud, og kan i stedet konsentrere utviklingsressursene om frivillig sektors særegne behov. Konkurrenter som bygger sin egen stack må allokere store deler av utviklingsbudsjettet til områder Microsoft løser bedre.</p>
+  <h4 class="spec-h3">2.1.1 Tekniske bærebjelker</h4>
+  <div class="spec-table-wrap"><table class="spec-table"><thead><tr><th>Komponent</th><th>Funksjon i FriOrg</th></tr></thead><tbody><tr><td>Microsoft Dataverse</td><td>Strukturerte data: medlemmer, verv, kontingent, transaksjoner. Rad-nivå sikkerhet og revisjonslogg.</td></tr>
+<tr><td>SharePoint Online</td><td>Dokumentarkiv, intranett, sak/arkiv-funksjonalitet, lagring av vedlegg, retensjonsregler.</td></tr>
+<tr><td>Entra ID</td><td>Identitet, MFA, ekstern brukerinvitasjon (B2B/B2C) for medlemmer uten Microsoft-konto.</td></tr>
+<tr><td>Power Platform</td><td>Power Apps for spesialfunksjoner, Power Automate for arbeidsflyt, Power BI for rapporter, Copilot Studio for AI-agenter.</td></tr>
+<tr><td>Microsoft Teams</td><td>Møter, samhandling, kanaler per lokallag/utvalg. FriOrg-app i Teams gir oppgaver, godkjenninger og varsler uten å forlate Teams.</td></tr>
+<tr><td>Microsoft Copilot</td><td>AI-assistent i hele løsningen — saksoppsummering, tekstutkast, naturlig språk-søk på arkivet.</td></tr>
+<tr><td>Azure Functions / Logic Apps</td><td>Eksterne integrasjoner: Brreg, Altinn, Frifond, betalingstjenester, Vipps, Lovdata.</td></tr></tbody></table></div>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Strategisk merknad: M365-avhengighet</div>
+    <p>FriOrg krever at organisasjonen har et Microsoft 365-tenant — typisk Business Premium eller en Nonprofit-lisens. Organisasjoner på Google Workspace eller helt uten skybasert kontorpakke vil ikke kunne bruke FriOrg uten å migrere først.</p>
+    <p>Dette er bevisst valgt. Vi gir slipp på en mindre andel av markedet for å kunne levere en dypt integrert løsning med høy verdi for resten. Microsoft tilbyr Nonprofit-rabatter (opptil 10 gratis Business Premium-lisenser per organisasjon) som gjør terskelen lav for de fleste norske foreninger.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">2.2 Datamodell — overordnet</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Sentralt i FriOrg står en utvidet kontaktmodell der personer kan ha flere parallelle relasjoner til organisasjonen samtidig: medlem, tillitsvalgt, ansatt, deltaker, giver, abonnent. Det er én kontakt — mange roller.</p>
+            <ul class="spec-list">
+              <li><strong>Kontakt (person eller virksomhet)</strong> &ndash; grunnentitet.</li>
+              <li><strong>Medlemskap</strong> &ndash; tidsbegrenset relasjon mellom kontakt og organisasjonsenhet, med kategori, kontingent og status.</li>
+              <li><strong>Verv</strong> &ndash; tidsbegrenset rolle (leder, kasserer, varamedlem, likeperson) knyttet til en organisasjonsenhet, med arvtaker-pekere.</li>
+              <li><strong>Organisasjonsenhet</strong> &ndash; nasjonalt ledd, region, fylkeslag, lokallag, utvalg, gruppe &ndash; fleksibel hierarkimodell.</li>
+              <li><strong>Husstand/familie</strong> &ndash; samler kontakter for familiekontingent og felles utsendelser.</li>
+              <li><strong>Hendelse</strong> &ndash; arrangement, m&oslash;te, kurs, oppdrag (likeperson, brukermedvirkning).</li>
+              <li><strong>Transaksjon</strong> &ndash; betaling, innbetaling, utbetaling, faktura, donasjon.</li>
+              <li><strong>Frivillighetslogg</strong> &ndash; registrert dugnadstid og frivillig innsats per kontakt, prosjekt og lokallag.</li>
+              <li><strong>Sak</strong> &ndash; arkivenhet, innkommende henvendelse eller styresak &ndash; med saksgang og habilitetskontroll.</li>
+              <li><strong>Hendelse (avvik)</strong> &ndash; u&oslash;nsket hendelse, varsling, sikkerhetsbrudd &ndash; med audit-trail og eskaleringslogikk.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 03</span>
+        <span class="spec-chapter-title">3. Funksjonsmoduler</span>
+        <span class="spec-chapter-meta">16 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        <div class="spec-intro">  <p>Dette kapitlet beskriver hver modul i FriOrg, hva den løser, hvilken funksjonalitet den inneholder og hvordan den henger sammen med andre deler av systemet. Modulene merket med ★ er nye i versjon 1.0.</p></div>
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.1 CRM — Kontakter, medlemmer og roller</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>CRM-modulen er hjertet i FriOrg. Den samler all informasjon om personer og virksomheter organisasjonen har en relasjon til, og holder styr på hvilken rolle de har til enhver tid.</p>
+  <h4 class="spec-h3">3.1.1 Medlemsregister</h4>
+  <ul class="spec-list">
+    <li>Innmelding via skjema, importeres fra fil, eller manuell registrering.</li>
+    <li>Medlemskategorier (hovedmedlem, ungdom, student, pensjonist, æresmedlem, støttemedlem) med ulik kontingent og rettigheter.</li>
+    <li>15-årsregelen automatisert: husstandsmedlemmer konverteres til hovedmedlem ved 15-årsdag, med varsel og foreldresamtykke.</li>
+    <li>Status (aktiv, venter på betaling, passiv, utmeldt) med automatiske overganger.</li>
+    <li>Komplett historikk: når medlemmet meldte seg inn, hvilke verv hen har hatt, hvilke arrangementer og oppdrag, kommunikasjonshistorikk.</li>
+    <li>Søk og segmentering på alle felter, lagrede segmenter for utsendelser.</li>
+  </ul>
+  <h4 class="spec-h3">3.1.2 Vervemodul</h4>
+  <ul class="spec-list">
+    <li>Vervekampanjer med trackbare lenker og QR-koder per kampanje og verver.</li>
+    <li>Topp-ververe leaderboard med kvartals- og årsstatistikk.</li>
+    <li>Belønningssystem (bonus, gaver, æresbevisninger) konfigurerbart per organisasjon.</li>
+    <li>Onboarding-flyt for nye medlemmer: velkomst-e-post, fadderordning, første arrangement-anbefaling.</li>
+  </ul>
+  <h4 class="spec-h3">3.1.3 Digitalt medlemskort</h4>
+  <ul class="spec-list">
+    <li>Apple Wallet, Google Wallet og Samsung Wallet-integrasjon.</li>
+    <li>QR-kode for innsjekk på arrangement og rabatter hos partnere.</li>
+    <li>Statusmerking (aktiv, æresmedlem, tillitsvalgt) på kortet.</li>
+  </ul>
+  <h4 class="spec-h3">3.1.4 Familie og husstand</h4>
+  <ul class="spec-list">
+    <li>Husstandsentitet samler 2+ kontakter med felles adresse og familiekontingent.</li>
+    <li>Samtykker og kommunikasjon kan settes på husstandsnivå (én utsending per familie).</li>
+    <li>Foreldresamtykke for medlemmer under 15 år, med automatisk varsel når barnet fyller 15.</li>
+  </ul>
+  <h4 class="spec-h3">3.1.5 Tillitsvalgte og ansatte</h4>
+  <ul class="spec-list">
+    <li>Verv-register koblet til organisasjonsenhet og periode.</li>
+    <li>Habilitetsregister: bistillinger, familierelasjoner, økonomiske interesser. Varsel ved potensielt habilitetsproblem i saksbehandling.</li>
+    <li>Valgperioder, varamedlemmer, valgkomitéens arbeidsverktøy.</li>
+  </ul>
+  <h4 class="spec-h3">3.1.6 Kompetansebase og sertifisering</h4>
+  <ul class="spec-list">
+    <li>Register over kurs, sertifikater og kompetansebevis per kontakt.</li>
+    <li>Utløpsvarsel for kompetanse som må fornyes (likeperson, førstehjelp, beredskap).</li>
+    <li>Kursadministrasjon: påmelding, gjennomføring, automatisk oppdatering av kompetanseregisteret.</li>
+    <li>Eksport av kompetansebevis som digitale signerte dokumenter.</li>
+  </ul>
+  <h4 class="spec-h3">3.1.7 ★ Arvtaker- og overlappingsmodul</h4>
+  <p>Når en lokallagsleder, kasserer eller annen tillitsvalgt slutter, er kunnskapsoverdragelsen ofte katastrofal. Avgående bytter ut sin private e-post, papirer forsvinner, passord glemmes, og den nyvalgte starter på bar bakke. FriOrg skal løse dette.</p>
+  <ul class="spec-list">
+    <li><strong>Per-verv sjekklister:</strong> &laquo;Hva skal du gj&oslash;re f&oslash;rste uken som ny kasserer&raquo; &ndash; innebygd i systemet, ikke i en glemt Word-fil.</li>
+    <li><strong>Automatisk overf&oslash;ring av tilganger:</strong> n&aring;r et verv overdras, flytter FriOrg over relevante SharePoint-tilganger, signaturrettigheter, abonnementer og innloggingsbruk i tilkoblede tjenester.</li>
+    <li><strong>Avgangs-pakke:</strong> avtroppende f&aring;r en strukturert eksport-flyt der hen registrerer p&aring;g&aring;ende saker, kontakter, kunnskap og praktisk informasjon f&oslash;r tilgangen lukkes.</li>
+    <li><strong>Onboarding-modul for nyvalgte:</strong> introvideoer, vedtekter for vervet, viktige kontakter, hvilke saker som er p&aring;g&aring;ende, hvor finner jeg hva.</li>
+    <li><strong>Overlappingsperiode:</strong> avtroppende og p&aring;troppende har felles tilgang i en konfigurerbar overgangsperiode (typisk 30 dager) for sp&oslash;rsm&aring;l og overdragelse.</li>
+    <li></li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Hvorfor dette er en differensiator</div>
+    <p>Frivillighetens største skjulte kostnad er kunnskap som forsvinner ved hver utskifting. En nyvalgt lokallagsleder bruker typisk 3–6 måneder bare på å forstå hva forrige leder drev med. Ingen av dagens systemer adresserer dette.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.2 Økonomi</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <h4 class="spec-h3">3.2.1 Regnskapssystem</h4>
+  <p>Et innebygd, NRS-F-tilpasset regnskapssystem dekker behovene til de fleste små og mellomstore organisasjoner. Bilag, kontoplan, momshåndtering, periodisering, prosjektregnskap, avstemming.</p>
+  <ul class="spec-list">
+    <li>Norsk standard kontoplan med foreningstilpasninger.</li>
+    <li>Prosjektregnskap kobler inntekter og kostnader til konkrete prosjekt og finansieringskilder (Frifond, Bufdir, gaver).</li>
+    <li>Bankavstemming via PSD2/Open Banking mot DNB, Nordea, SpareBank 1 m.fl.</li>
+    <li>SAF-T-eksport for revisor.</li>
+    <li>Direkte integrasjoner mot Tripletex, Visma og Fiken for organisasjoner som vil beholde sitt eksisterende regnskapssystem.</li>
+  </ul>
+   <aside class="spec-callout">
+    <div class="spec-callout-title">Strategisk merknad: regnskap</div>
+    <p>Vi konkurrerer ikke mot bunnsolide eller godt etablerte regnskapssystemer på dybde. FriOrg dekker «godt nok» for små lag og integrerer dypt for større.</p>
+  </aside>
+  <h4 class="spec-h3">3.2.2 Fakturering og kontingentinnkreving</h4>
+  <ul class="spec-list">
+    <li>Kontingentkjøring én gang i året eller løpende, med automatiske purrerutiner (30/60/90 dager).</li>
+    <li>AvtaleGiro og Vipps Faste betalinger som standard for medlemskontingent.</li>
+    <li>KID-genererte fakturaer med EHF-utsending mot offentlige mottakere via Peppol.</li>
+    <li>Inkassoflyt mot tredjeparts inkassoselskap, med automatisk overføring etter X dager.</li>
+  </ul>
+  <h4 class="spec-h3">3.2.3 Budsjett</h4>
+  <ul class="spec-list">
+    <li>Budsjett per organisasjonsenhet og prosjekt.</li>
+    <li>Budsjett vs. faktisk-rapport i sanntid, drillbar fra prosjekt → kostnadssted → bilag.</li>
+    <li>Excel-add-in lar økonomiansvarlig hente live-data og pushe budsjett tilbake.</li>
+  </ul>
+  <h4 class="spec-h3">3.2.4 Betalingsmodul</h4>
+  <ul class="spec-list">
+    <li>Vipps og kortbetaling for arrangement, kontingent og nettbutikk.</li>
+    <li>Tilbakebetaling og kreditnota.</li>
+    <li>Avstemming mot bank automatisk.</li>
+  </ul>
+  <h4 class="spec-h3">3.2.5 Nettbutikk og POS</h4>
+  <ul class="spec-list">
+    <li>Nettbutikk for medlemsartikler, bøker, billetter.</li>
+    <li>POS-modul (kasse) for kiosk på arrangement og loppemarked.</li>
+    <li>Lager- og produktstyring.</li>
+    <li>Vipps-betaling og kortleser.</li>
+  </ul>
+  <h4 class="spec-h3">3.2.6 ★ Sponsor- og giverdatabase</h4>
+  <p>Givere og sponsorer er en egen kategori som krever annen behandling enn medlemmer. FriOrg tilbyr en dedikert giverdatabase med pipeline-funksjonalitet og automatisk skattefradrag.</p>
+  <ul class="spec-list">
+    <li>§ 6-50-rapportering automatisk til Skatteetaten: organisasjonen registreres som godkjent gavemottaker, givere får skattefradrag for gaver, FriOrg sender inn data årlig.</li>
+    <li>Giverhistorikk per kontakt: når sist gitt, hva, til hvilket prosjekt, kommunikasjon.</li>
+    <li>Pipeline for storgivere: lead → første samtale → forslag → avtale → oppfølging — på samme måte som en B2B-salgsprosess.</li>
+    <li>Vipps Innsamling, fast donasjon, og engangsbidrag — alt samlet i én giverprofil.</li>
+    <li>Anerkjennelse: takkebrev, gaveplaketter, æresplaketter automatisk generert fra giverhistorikk.</li>
+    <li>Bedrifts-CRM: sponsoravtaler, motytelser, fakturering, rapportering tilbake til sponsor.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Konkret ROI</div>
+    <p>§6-50 gir privatpersoner inntil 25 000 kr i skattefradrag for gaver. Bedrifter får full fradragsrett. Organisasjoner som dokumenterer dette riktig henter typisk 15–30 % mer i donasjoner enn de som ikke gjør det. FriOrg automatiserer hele løypa.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.3 Kommunikasjon (toveis)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <h4 class="spec-h3">3.3.1 Kanaler</h4>
+  <ul class="spec-list">
+    <li>E-post (egen avsenderdomene, høy leveringskvalitet).</li>
+    <li>SMS via norsk leverandør (Sveve, LINK Mobility).</li>
+    <li>Digipost for digitale brev.</li>
+    <li>Fysisk brev via Bring/Posten.</li>
+    <li>Push-varsler i medlemsappen og Teams-app.</li>
+    <li>Chat (Microsoft Teams og direktechat på nettsiden).</li>
+  </ul>
+  <h4 class="spec-h3">3.3.2 Ticketing / saksbehandling</h4>
+  <ul class="spec-list">
+    <li>Innkommende henvendelser fra alle kanaler samles i felles innboks.</li>
+    <li>Tildeling, status, SLA og eskalering.</li>
+    <li>Kanban-visning og prioriteringsmatrise.</li>
+    <li>AI-kategorisering: innkommende henvendelser klassifiseres automatisk (klage/spørsmål/innspill/søknad).</li>
+    <li>Forslag til svar basert på lignende tidligere saker (Copilot-drevet).</li>
+  </ul>
+  <h4 class="spec-h3">3.3.3 Segmentering og målgrupper</h4>
+    <ul class="spec-list">
+      <li>Segmenter basert p&aring; alle felter i CRM.</li>
+      <li>Lagrede segmenter (alle ungdomsmedlemmer i Vestland, alle med utl&oslash;pt likepersonkompetanse, etc.).</li>
+      <li>A/B-testing av e-post.</li>
+      <li>Detaljert leveringsrapport (&aring;pning, klikk, svar).</li>
+    </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.4 Arrangement og påmelding</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <h4 class="spec-h3">3.4.1 Påmelding</h4>
+  <ul class="spec-list">
+    <li>Skjema med dynamiske spørsmål basert på arrangementtype.</li>
+    <li>Betalingsmodul integrert (Vipps, kort, faktura).</li>
+    <li>Bekreftelses-e-post, kalenderinnkalling (.ics).</li>
+    <li>Venteliste med automatisk innkalling når plass ledig.</li>
+    <li>Tilrettelegging-spørsmål (allergi, mobilitet, behov for tolk) håndteres skjermet.</li>
+  </ul>
+  <h4 class="spec-h3">3.4.2 Oppmøte og deltakelse</h4>
+  <ul class="spec-list">
+    <li>QR-innsjekk via medlemskort eller mobil.</li>
+    <li>Manuell innsjekk for deltakere uten medlemskort.</li>
+    <li>Deltakerstatistikk og no-show-rapport.</li>
+    <li>Automatisk dugnadstime-registrering for frivillige (se 3.5.3).</li>
+  </ul>
+  <h4 class="spec-h3">3.4.3 Møter (Teams-integrasjon)</h4>
+    <ul class="spec-list">
+      <li>Saksliste med foredragsholdere, vedlegg, votering.</li>
+      <li>M&oslash;tereferat med integrert skribent-rolle.</li>
+      <li>Voterings-modul: enkelt flertall, kvalifisert flertall, hemmelig avstemning.</li>
+      <li>AI-utkast til referat fra Teams-opptak (Copilot).</li>
+      <li>Habilitetskontroll: n&aring;r en sak meldes inn, sjekker FriOrg om noen i m&oslash;tet er inhabile og varsler.</li>
+    </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.5 Loggføring og dokumentasjon</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <h4 class="spec-h3">3.5.1 Standardiserte logger</h4>
+  <ul class="spec-list">
+    <li>Likepersonoppdrag: dato, kanal, oppdragstype, kategori (anonymisert), oppfølging.</li>
+    <li>Brukermedvirkningsoppdrag: oppdragsgiver, varighet, type oppdrag, honorar.</li>
+    <li>Inhabilitetserklæringer for styresaker.</li>
+    <li>Innsynskrav etter offentleglova/forvaltningsloven (for organisasjoner som mottar tilskudd).</li>
+  </ul>
+  <h4 class="spec-h3">3.5.2 Egendefinerte skjemaer</h4>
+  <ul class="spec-list">
+    <li>Skjemabygger med dra-og-slipp.</li>
+    <li>Felles skjemabank med maler delt mellom organisasjoner.</li>
+    <li>Innsendinger lagres som saker i saksarkivet.</li>
+  </ul>
+  <h4 class="spec-h3">3.5.3 ★ Frivillighetstimer og dugnadslogg</h4>
+  <p>Frivillig innsats er organisasjonenes viktigste ressurs, men de fleste fører ikke timene systematisk. Dette betyr tapt tilskudd, dårligere søknader og manglende anerkjennelse av enkeltmenneskers innsats.</p>
+  <ul class="spec-list">
+    <li>Mobilapp: medlemmer logger timer selv med dato, prosjekt og kategori.</li>
+    <li>QR-kode på arrangement og dugnader: skann og start klokka, skann igjen for å stoppe.</li>
+    <li>Automatisk tellig: deltakelse på arrangement, møter og oppdrag genererer timer uten manuell registrering.</li>
+    <li>Akkumulering per person, lokallag, prosjekt — synlig på Min side og i lokallagets dashboard.</li>
+    <li>Direkte kobling til Frifond-rapport, søknader til Sparebankstiftelsen, og årsrapport.</li>
+    <li>Ledertavle (ledertavle / ledertabell): mest aktive lokallag og frivillige, anonymiserbart.</li>
+    <li>Anerkjennelse: 100-timers-, 500-timers- og 1000-timers-merker, automatisk takkebrev og diplom.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Strategisk verdi</div>
+    <p>Tilskuddsgivere som Sparebankstiftelsen DNB og Stiftelsen Dam vekter dokumentert frivillig innsats tungt. En organisasjon som kan vise «4 218 dokumenterte frivillighetstimer i 2025» får systematisk høyere tildeling enn en som bare estimerer.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.6 Rapportering og søknader</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <h4 class="spec-h3">3.6.1 Frifond</h4>
+  <ul class="spec-list">
+    <li>Automatisk generering av søknadsdata fra medlemsregister, lokallag og aktivitetsdata.</li>
+    <li>Steg-for-steg-veiviser med automatisk validering mot Frifond-kravene.</li>
+    <li>Direkte innsending via Altinn med BankID-signering.</li>
+    <li>Sluttrapport per lokallag genereres automatisk fra aktivitets- og frivillighetsdata.</li>
+  </ul>
+  <h4 class="spec-h3">3.6.2 Momskompensasjon</h4>
+  <ul class="spec-list">
+    <li>Forenklet og dokumentert modell — automatisk valg av beste alternativ.</li>
+    <li>Direkte uttrekk fra regnskapet.</li>
+    <li>Innsending via Lottstift sin portal.</li>
+  </ul>
+  <h4 class="spec-h3">3.6.3 Årsrapportering</h4>
+  <ul class="spec-list">
+    <li>Automatisk rapport til Brønnøysund (Frivillighetsregisteret) og Skatteetaten.</li>
+    <li>Årsmelding-mal med innfylling fra aktivitetsdata.</li>
+    <li>Signering via BankID/Altinn.</li>
+  </ul>
+  <h4 class="spec-h3">3.6.4 Andre tilskudd</h4>
+  <ul class="spec-list">
+    <li>Bibliotek av tilskuddsordninger (Bufdir, Helsedirektoratet, Kulturrådet, lokale stiftelser) med frister og krav.</li>
+    <li>Søknadskalender med automatiske påminnelser.</li>
+    <li>Maler for søknader basert på tidligere innsending.</li>
+  </ul>
+  <h4 class="spec-h3">3.6.5 ★ Anonymisert benchmarking</h4>
+  <p>Hvor god er vi egentlig? FriOrg samler aggregerte, anonymiserte nøkkeltall på tvers av kunder og gir hver organisasjon en sammenligning mot relevante peers.</p>
+  <ul class="spec-list">
+    <li>Eksempel: «Foreningen din har 3,2 % medlemsfrafall i Q1 — gjennomsnittet for foreninger med 1 000–5 000 medlemmer er 4,8 %.»</li>
+    <li>Aggregerte nøkkeltall per organisasjonsstørrelse, type (idrett, kultur, helse, interesse) og geografi.</li>
+    <li>Bare deltakende organisasjoner får tilgang — opt-in for både datadeling og innsyn.</li>
+    <li>All data anonymiseres etter k-anonymitetsprinsipper (minst 5 organisasjoner per peer-gruppe).</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Hvorfor dette skaper lock-in</div>
+    <p>Når man har brukt benchmarking-funksjonen i ett år og ser sin egen utvikling mot peers, er det vanskelig å gå tilbake til å fly blindt. Verdien vokser med antallet kunder — en klassisk nettverkseffekt som de andre frivillighets-systemene ikke kan kopiere uten å starte fra null.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.7 Fleksibel organisasjonsstruktur</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Hierarkisk modell: nasjonalt → region → fylkeslag → lokallag → utvalg.</li>
+    <li>Utvalg på tvers (ungdomsutvalg, fagutvalg) som ikke følger hierarkiet.</li>
+    <li>Egendefinerte enhetstyper (menighet, klubb, gruppe — alt etter bransjespråk).</li>
+    <li>Tilgangskontroll og rapportering følger strukturen automatisk.</li>
+  </ul>
+  <h4 class="spec-h3">3.7.1 ★ Multi-tenant for paraplyorganisasjoner</h4>
+  <p>Norges Idrettsforbund har 12 000 underforeninger. Trossamfunn har 200 menigheter. Studentsamskipnader, fagforbund og humanitære paraplyer har lignende strukturer — der hver underliggende enhet er juridisk selvstendig, men deler infrastruktur og rapportering.</p>
+  <ul class="spec-list">
+    <li>FriOrg kan kjøres som multi-tenant der hver underforening har egen datasilo, egen tilgang, eget regnskap.</li>
+    <li>Paraplyorganisasjonen har konfigurerbar innsyn på tvers — typisk aggregerte tall, ikke personopplysninger.</li>
+    <li>Felles maler, vedtekter og verktøy distribueres ovenfra; selvstendighet beholdes nedover.</li>
+    <li>Hierarkiske databehandleravtaler bygges inn (paraply som behandlingsansvarlig på fellestjenester, underforening på egne data).</li>
+    <li>Sentralisert lisensiering — paraply betaler en blokk, underforeninger får tilgang etter behov.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Markedsåpning</div>
+    <p>Multi-tenant åpner et helt annet marked enn enkelt-foreningskunden. Et idrettsforbund eller trossamfunn er en stor avtale i seg selv, og man får 12 000 underforeninger «på kjøpet». Krever betydelig arkitektur-arbeid, men det er en strategisk lås mot konkurrenter.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.8 Sikkerhet og tilgangsstyring</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>MFA p&aring;krevd for tillitsvalgte og ansatte.</li>
+              <li>BankID som autentiseringsmetode for vanlige medlemmer.</li>
+              <li>Rolle- og rad-niv&aring;-sikkerhet i Dataverse.</li>
+              <li>Detaljert audit-logg p&aring; alle endringer i sensitive felter.</li>
+              <li>Eksternt revisor- og kontrollkomit&eacute;-tilgang (se 3.16).</li>
+              <li>Slettefrister og anonymisering automatisert.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.9 Saks- og dokumentarkiv</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Noark 5-inspirert struktur (uten full sertifisering, men med tilsvarende dataordning).</li>
+    <li>SharePoint som lagringsmotor med retensjonsregler og versjonering.</li>
+    <li>Saksgang med tildeling, status, frister, vedtak.</li>
+    <li>Dokumenter, e-post og vedlegg knyttet til saker.</li>
+    <li>Innsynsforespørsler etter offentleglova håndteres som egen sakstype.</li>
+  </ul>
+  <h4 class="spec-h3">3.9.1 ★ AI-assistent over saksarkivet</h4>
+  <p>Microsoft Copilot er bygget inn som en kjernedel av FriOrg, ikke som et tillegg. Dette er den mest synlige differensiatoren mot konkurrentene.</p>
+  <ul class="spec-list">
+    <li><strong>«Spør foreningen din»: </strong>naturlig språk-søk på tvers av saksarkiv, vedtekter, tidligere protokoller og dokumenter. Eksempel: «Har styret vedtatt noe om habilitet siste 5 år?» — Copilot finner relevante vedtak, refererer til kildene og oppsummerer.</li>
+    <li><strong>Automatisk saksoppsummering: </strong>lange e-posttråder, saksdokumenter og møtereferat oppsummeres på 5–10 setninger med kilde-referanser.</li>
+    <li><strong>Utkast til møtereferat: </strong>fra Teams-opptak genereres et førsteutkast med sakslistereferanse, vedtak og handlinger. Skribenten kvalitetsikrer.</li>
+    <li><strong>Utkast til svar: </strong>innkommende henvendelser får forslag til svar basert på lignende tidligere saker, organisasjonens vedtekter og policy. Saksbehandler godkjenner eller redigerer.</li>
+    <li><strong>Auto-kategorisering: </strong>innkommende e-post og skjemaposter klassifiseres (klage / spørsmål / innspill / søknad / klage på enkeltvedtak) og rutes automatisk.</li>
+    <li><strong>Vedtekts-fortolkning: </strong>AI-en kan svare på spørsmål om organisasjonens egne vedtekter — alltid med direkte sitat og paragrafhenvisning.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Personvern og kvalitet</div>
+    <p>AI-en jobber kun innenfor organisasjonens egen tenant — ingen data brukes til å trene modeller eller deles med andre kunder. Alle AI-genererte tekster er merket og krever menneskelig godkjenning før de sendes utad. Copilot er en assistent, ikke en autopilot.</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.10 Skjemaløsning</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>Dra-og-slipp skjemabygger.</li>
+              <li>Betinget logikk (vis felt X hvis svar Y).</li>
+              <li>Flerstegs skjemaer for s&oslash;knader.</li>
+              <li>Innsendinger lagres som saker, kobles til kontakter, utl&oslash;ser arbeidsflyt.</li>
+              <li>Anonyme skjemaer for varsling og innspill.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.11 Publikasjoner</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>Medlemsblad-modul med abonnementsh&aring;ndtering.</li>
+              <li>Distribusjonsliste basert p&aring; medlemskap eller eksternt abonnement.</li>
+              <li>Digitalt distribusjon (PDF, e-post, web) og fysisk utsending.</li>
+              <li>Annonsestyring og fakturering.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.12 Intranett</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>SharePoint-basert intranett for tillitsvalgte og ansatte.</li>
+              <li>Nyheter, kunngj&oslash;ringer, hurtiglenker.</li>
+              <li>Wiki for vedtekter, retningslinjer, prosedyrer.</li>
+              <li>Forum for diskusjon mellom tillitsvalgte.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.13 Ekstranett (offentlig nettsted)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>WordPress eller tilsvarende CMS for offentlig nettside.</li>
+              <li>SSO mot Entra ID for redakt&oslash;rer.</li>
+              <li>Skjema-poster fra nettsiden lagres direkte i FriOrg-saksarkivet.</li>
+              <li>Medlemsinnmelding direkte fra nettsiden, integrert med CRM.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.14 ★ Vedtektsmotor og regelvalidering</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Dette er den funksjonen som skiller FriOrg mest tydelig fra alle andre fagsystem for foreninger. Ingen konkurrent har noe i nærheten.</p>
+  <p>Organisasjonens egne vedtekter lastes opp og struktureres maskinlesbart. Etter første gangs oppsett — som FriOrg gjør sammen med kunden — fungerer vedtektene som regelmotor for hele systemet.</p>
+  <h4 class="spec-h3">3.14.1 Hva motoren validerer</h4>
+  <ul class="spec-list">
+    <li>Innkalling: er årsmøtet innkalt med riktig frist (typisk 14 eller 30 dager)? Er sakslisten distribuert som vedtektene krever?</li>
+    <li>Quorum: har styret nok oppmøtte til å fatte vedtak? Hvilke vedtak krever quorum og hvilke ikke?</li>
+    <li>Stemmeregler: krever vedtaket simpelt flertall, kvalifisert flertall (2/3) eller absolutt flertall? Vedtektsendringer? Eksklusjon?</li>
+    <li>Valgbarhet: hvem kan stilles til valg som leder? Må man være medlem i minst X år? Kan ansatte velges? Kan samme person ha verv A og B samtidig?</li>
+    <li>Habilitet: er noen i forsamlingen inhabile i denne saken (familierelasjon, økonomisk interesse, tidligere arbeidsgiver)?</li>
+    <li>Frister: protokoll skal signeres innen X dager, regnskap revideres innen Y, årsmelding distribueres senest Z.</li>
+  </ul>
+  <h4 class="spec-h3">3.14.2 Hvordan motoren brukes</h4>
+  <ul class="spec-list">
+    <li>I møtemodulen: når en sak meldes inn, sjekker FriOrg automatisk om vedtaket er gyldig basert på tilstede, vedtekter og habilitet. Varsel ved problem.</li>
+    <li>I valgkomitémodulen: kandidater valideres mot valgbarhetskravene før de listes.</li>
+    <li>I innkallinger: FriOrg påser at frister følges, og varsler hvis innkallingen er for sent ute.</li>
+    <li>I vedtekts-fortolkning: medlemmer og tillitsvalgte kan stille spørsmål til AI-en om hva vedtektene sier — alltid med direkte sitat fra paragrafen.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Smertepunkt nr. 1 for små foreninger</div>
+    <p>Et lokallag i Vestland har akkurat hatt en kontroversiell eksklusjonssak. Var vedtaket gyldig? Hadde lokallaget quorum? Var innkallingen riktig? Trenger man jurist for å svare. Med vedtektsmotoren får man «Vedtaket oppfyller § 7-3 (innkalling), § 11 (quorum), men § 14 (eksklusjon) krever 2/3 flertall — vedtaket fikk 58 % og er derfor ikke gyldig.»</p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.15 ★ Krise- og hendelseshåndtering</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Organisasjoner som driver leirer, idrett, helserelatert arbeid eller arbeid med barn har lovkrav til å håndtere uønskede hendelser systematisk. I dag gjøres dette på Excel og e-post — som er en risiko.</p>
+  <ul class="spec-list">
+    <li>Innrapportering av avvik, uønskede hendelser, sikkerhetsbrudd og varslingssaker.</li>
+    <li>Anonymitetsmodus for varslere — FriOrg lagrer rapporten kryptert, varsleridentitet er adskilt og kun tilgjengelig for et begrenset varslingsutvalg.</li>
+    <li>Tidsstemplet hendelseslogg som ikke kan endres (audit-trail med kryptografisk signering).</li>
+    <li>Automatisk eskalering til styre, daglig leder eller eksternt varslingsorgan etter konfigurerbare regler.</li>
+    <li>Statistikk og trender: er det mønster? Samme person? Samme lokallag? Samme arrangement-type?</li>
+    <li>Integrasjon mot Arbeidstilsynet for arbeidsplassrelaterte avvik, og mot Bufdir/barnevernlov-rapportering der relevant.</li>
+    <li>Beredskapsplan og krisestab: i en akutt situasjon (alvorlig skade på arrangement, mediekrise, sikkerhetsbrudd) finnes ferdige sjekklister og kommunikasjonsmaler.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Lov og praksis</div>
+    <p>Arbeidsmiljøloven § 2A-4 og barnevernloven § 6-7 stiller krav til varslingsrutiner og hendelseslogg. De fleste små organisasjoner møter ikke kravene fullt ut. FriOrg løser dette uten at organisasjonen må kjøpe et eget HMS-system.</p>
+    <p><em>* Det nevnte lovgrunnlag er kun relevant hvor organisasjonen er omfattet av loven, som om man har ansatte.</em></p>
+  </aside>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">3.16 ★ Revisor- og kontrollkomitéportal</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Eksterne revisorer og interne kontrollkomitéer trenger jevnlig innsyn i organisasjonens data. I dag betyr dette at noen i sekretariatet bruker dager på å samle inn Excel-filer, dokumenter og pdf-er som sendes via e-post — med tilhørende risiko for feil og dataeksponering.</p>
+  <ul class="spec-list">
+    <li>Egne tilgangsroller for ekstern revisor og kontrollkomité med forhåndsdefinert lese-tilgang til relevante moduler.</li>
+    <li>Selvbetjent tilgang til hovedbok, bilag, transaksjoner, styresaker og protokoller.</li>
+    <li>Tidsbegrenset tilgang som automatisk utløper etter at oppdraget er fullført.</li>
+    <li>Audit-spor: hver revisor-handling logges, slik at organisasjonen vet hvem som har sett hva.</li>
+    <li>Direkte SAF-T-eksport til revisor.</li>
+    <li>Ingen e-postutveksling av sensitive data.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Konkret tidsbesparelse</div>
+    <p>Sekretariatet bruker typisk 20–40 timer per år på revisor-forberedelser. Med portalen reduseres dette til under 5 timer. Risikoen for at sensitive data lekker via e-post eller blir værende i revisors innboks fjernes helt.</p>
+  </aside>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 04</span>
+        <span class="spec-chapter-title">4. M365-spesifikke supermakter</span>
+        <span class="spec-chapter-meta">4 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        <div class="spec-intro">  <p>M365-fundamentet er ikke bare et teknisk valg — det er en moat mot rene SaaS-konkurrenter. Dette kapitlet beskriver fire integrasjoner som utnytter M365-stacken aggressivt og gir brukeropplevelse konkurrentene ikke kan matche.</p></div>
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">4.1 Teams som primær arbeidsflate</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Tillitsvalgte og ansatte bruker allerede Teams flere timer hver dag. FriOrg flytter inn dit i stedet for å trekke folk ut til en separat applikasjon.</p>
+            <ul class="spec-list">
+              <li>Teams-app som viser oppgaver, varsler, godkjenninger og frister i en personlig fane.</li>
+              <li>&laquo;Adaptive Cards&raquo; dukker opp i kanaler: &laquo;Bjørn har sendt inn reiseregning p&aring; 1 240 kr &ndash; godkjenn?&raquo; med ja/nei-knapper og kommentarfelt.</li>
+              <li>Meld inn medlem direkte i Teams via en chatbot.</li>
+              <li>Sjekk medlemsstatus uten &aring; forlate samtalen: &laquo;@FriOrg slår; opp Anne Solberg&raquo;.</li>
+              <li>Slack-konkurrentene kan ikke matche dette på samme integrasjonsniv&aring;.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">4.2 Outlook-add-in for medlemskontekst</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Når en e-post fra et medlem åpnes i Outlook, vises et sidepanel med relevant kontekst — medlemstatus, verv, pågående saker, siste interaksjoner. Daglig leder eller kommunikasjonsansvarlig slipper å bytte mellom verktøy.</p>
+            <ul class="spec-list">
+              <li>Identifiserer avsender i medlemsregisteret automatisk.</li>
+              <li>Viser status, verv, kontingent, siste 5 interaksjoner.</li>
+              <li>Pågående saker hen er involvert i, med direkte lenke til saksarkivet.</li>
+              <li>Ett-klikk-handling: «Logg denne samtalen som likepersonoppdrag», «Opprett sak», «Flagg som klage».</li>
+              <li>Maler tilpasset organisasjonens kommunikasjonsstil for raske svar.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">4.3 SharePoint som dokumentkjerne</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Vi bygger ikke et eget dokumenthåndteringssystem. Vi bruker SharePoint og brander det som FriOrg sin saksarkiv-modul — med ferdig oppsatte taksonomier, retensjonsregler, maler og automatiseringer.</p>
+            <ul class="spec-list">
+              <li>Organisasjonene får enterprise-grade DMS gratis i prisen.</li>
+              <li>Brukerne får lavere læringsterskel – mange kjenner SharePoint allerede.</li>
+              <li>Vi konsentrerer utviklingsarbeidet på frivillighetsspesifikke konfigurasjoner i stedet for grunnleggende DMS-funksjonalitet.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">4.4 Excel som rapportverktøy for økonomer</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Mange kasserer-typer foretrekker Excel uansett hva systemet tilbyr. I stedet for å kjempe mot dette, omfavner FriOrg det.</p>
+  <ul class="spec-list">
+    <li>Excel-add-in henter live regnskapsdata med én knapp.</li>
+    <li>Brukeren bygger egne pivottabeller, rapporter og analyser.</li>
+    <li>Endringer i budsjett pushes tilbake til FriOrg.</li>
+    <li>Filer kan deles på SharePoint og holdes synkronisert.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Strategi</div>
+    <p>Mange konkurrenter «låser» data i sitt eget grensesnitt for å skape avhengighet. Vi gjør motsatt: lar folk bruke verktøyet de allerede kan og foretrekker. Det skaper tillit og reduserer motstand mot å bytte fra dagens system.</p>
+  </aside>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 05</span>
+        <span class="spec-chapter-title">5. Integrasjoner</span>
+        <span class="spec-chapter-meta">5 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+                    <p>Integrasjoner er en nøkkel for å skape en sømløs og effektiv hverdag for frivillige og tillitsvalgte. Ved å koble FriOrg til relevante systemer og tjenester, kan vi automatisere arbeidsprosesser, forenkle samarbeid og sikre trygg dataflyt. Dette kapittelet gir en oversikt over sentrale integrasjoner, fra Microsoft 365 til offentlige norske løsninger, som bidrar til å gjøre organisasjonens digitale verktøy enklere og mer tilgjengelige for alle.</p>
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">5.1 Microsoft 365</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>Outlook (e-post, kalender, kontakter).</li>
+              <li>Teams (møter, kanaler, chat, app).</li>
+              <li>SharePoint (dokumentlagring, intranett).</li>
+              <li>OneDrive (filsynk for tillitsvalgte).</li>
+              <li>Power BI (rapporter).</li>
+              <li>Power Automate (arbeidsflyt).</li>
+              <li>Copilot (AI-assistanse).</li>
+              <li>Excel (rapport-add-in).</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">5.2 Norske offentlige integrasjoner</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>Brønnøysundregistrene (Brreg, Frivillighetsregisteret) – automatisk validering og oppdatering.</li>
+              <li>Altinn – innsending av rapporter og søknader, BankID-signering.</li>
+              <li>Skatteetaten – §6-50-rapportering for skattefradrag på gaver.</li>
+              <li>Folkeregisteret – adresse- og dødsfallsoppdateringer (krever konsesjon).</li>
+              <li>Lotteritilsynet – momskompensasjon.</li>
+              <li>KORG / Frifond / LNU – tilskuddsdata og rapportering.</li>
+              <li>Lovdata Pro API – oppslag på lov, forskrift og dom for vedtekts-fortolkning.</li>
+              <li>Bufdir og Helsedirektoratet – tilskudd og pliktrapportering.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">5.3 Betalings- og kommunikasjonsleverandører</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>Vipps Mobilepay (betaling, faste betalinger, innsamling).</li>
+              <li>Nets / Mastercard (kortbetaling).</li>
+              <li>AvtaleGiro (BBS / NETS).</li>
+              <li>DNB / Nordea / SpareBank 1 (PSD2 Open Banking for bankavstemming).</li>
+              <li>Sveve / LINK Mobility (SMS).</li>
+              <li>Posten / Bring (fysisk post, Digipost).</li>
+              <li>EHF / Peppol (faktura til offentlige mottakere).</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">5.4 API og webhooks</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>REST API med OAuth 2.0-autentisering.</li>
+              <li>Webhook-rammeverk for hendelser (medlem opprettet, betaling mottatt, sak avsluttet).</li>
+              <li>OpenAPI 3.0-spesifikasjon med interaktiv dokumentasjon.</li>
+              <li>Rate limits og brukskontroll.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">5.5 ★ Integrasjons-marketplace</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Frivilligsentraler, fagforeninger, idrettslag, trossamfunn og humanitære organisasjoner har til dels svært ulike behov. I stedet for å bygge alt selv, åpner FriOrg en App Store-modell der tredjepartsutviklere kan publisere integrasjoner og spesialtilpasninger.</p>
+  <ul class="spec-list">
+    <li>Sertifiserte connectors med dokumentert sikkerhetsgjennomgang.</li>
+    <li>Inntektsdeling med utviklere er mulig der utvikler ønsker betaling (70/30-modell, etter Salesforce AppExchange / Microsoft AppSource).</li>
+    <li>Vurderinger, anmeldelser og brukstall.</li>
+    <li>Kategorier: idrett, kultur, helse, religion, miljø, internasjonalt arbeid.</li>
+    <li>Eksempler på connectors: idrettsforbund-spesifikke moduler, menighetsverktøy, fagforenings-tariffspørsmål, donor-management for bistandsorganisasjoner.</li>
+  </ul>
+  <aside class="spec-callout">
+    <div class="spec-callout-title">Økosystem-effekt</div>
+    <p>Når marketplace tar av, blir FriOrg ikke bare et system kunden bruker, men en plattform kunden bygger på. Bytte-kostnaden vokser eksponentielt — på samme måte som det er nesten umulig å forlate Salesforce eller Shopify når man har integrert med 15 third-party-løsninger.</p>
+  </aside>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 06</span>
+        <span class="spec-chapter-title">6. Brukerroller og typiske scenarier</span>
+        <span class="spec-chapter-meta">2 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">6.1 Bruker-personas</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Tre typiske brukere med ulike behov:</p>
+  <h5 class="spec-h4">Kari, daglig leder</h5>
+  <p>Kari leder et nasjonalt sekretariat med 4 ansatte. Hun bruker FriOrg til styring, rapportering, kommunikasjon med lokallag og tilskuddssøknader. Hun er på Outlook hele dagen og forventer at FriOrg snakker med Outlook og Teams sømløst.</p>
+  <h5 class="spec-h4">Bjørn, lokallagsleder (frivillig)</h5>
+  <p>Bjørn leder et lokallag i Vestland med 280 medlemmer. Han har vervet sitt på fritiden ved siden av en full jobb. Han bruker FriOrg sporadisk — typisk kvelder og helger — og har null tålmodighet for tunge opplæringsløp eller flere systemer. Det må bare virke.</p>
+  <h5 class="spec-h4">Anne, tillitsvalgt og likeperson</h5>
+  <p>Anne er pensjonert, valgt til lokallagsleder i Oslo, og sertifisert likeperson. Hun fører likepersonoppdrag, deltar i brukermedvirkning, og har tre verv parallelt. Hun trenger oversikt over sine egne aktiviteter og at systemet ikke gjør jobben mer komplisert.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">6.2 Eksempel: Innmelding fra start til medlemskort</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>La oss følge en innmelding fra ende til annen for å vise hvordan modulene henger sammen.</p>
+  <ul class="spec-list">
+    <li><strong>Steg 1: </strong>Marit ser en annonse for organisasjonen og klikker «Bli medlem» på nettsiden. Hun fyller ut et kort skjema med navn, e-post, telefon og fylke.</li>
+    <li><strong>Steg 2: </strong>Skjemaet sendes til FriOrg via webhook. Adresse hentes fra Folkeregisteret basert på fødselsnummer (med samtykke). Lokallag tildeles automatisk basert på postnummer.</li>
+    <li><strong>Steg 3: </strong>Marit får velkomstbrev på e-post med Vipps-lenke for kontingent (450 kr). Hun betaler med ett klikk.</li>
+    <li><strong>Steg 4: </strong>Power Automate trigger: når betaling mottas, opprettes hovedmedlemskap aktivt. Lokallagsleder Bjørn får varsel i Teams om nytt medlem.</li>
+    <li><strong>Steg 5: </strong>Marit får digitalt medlemskort lagt til Apple Wallet. SMS bekrefter at hun er aktiv.</li>
+    <li><strong>Steg 6: </strong>Bjørn ringer henne velkommen — han ser i Outlook-add-in at hun nettopp meldte seg inn og at hun jobber innenfor et fagfelt relevant for lokallaget. Han inviterer henne til neste arrangement direkte fra Outlook.</li>
+    <li><strong>Steg 7: </strong>Marit melder seg på arrangementet, sjekker inn med QR-koden, og 3 timers frivillig innsats logges automatisk fordi hun stilte som vakt.</li>
+  </ul>
+  <p>Hele prosessen: ingen manuell registrering for Bjørn, ingen Excel-import, ingen tapt kontakt mellom verktøy.</p>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 07</span>
+        <span class="spec-chapter-title">7. Brukergrensesnitt — designprinsipper</span>
+        <span class="spec-chapter-meta">3 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">7.1 Designprinsipper</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+              <li>Microsoft Fluent Design som basis – kjent visuelt språk for M365-brukere.</li>
+              <li>Norsk språk gjennomgående – alle felter, knapper, varsler og feilmeldinger på norsk bokmål, med nynorsk som valg.</li>
+              <li>Tre nivåer av kompleksitet: enkel modus for medlemmer, standard for tillitsvalgte, avansert for administrasjon.</li>
+              <li>Hurtighandlinger via kommandopalett (⌘K eller Ctrl+K) – søk og handling samme sted.</li>
+              <li>Tilgjengelighet WCAG 2.2 AA som minimum, AAA der mulig.</li>
+              <li>Mobiloptimalisert: alle medlemsvendte funksjoner fungerer like godt på telefon.</li>
+              <li>Personlig preg: hver organisasjon kan tilpasse farger, logo og brand uten kode.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">7.2 Hovedområder i administratorgrensesnittet</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+<li>Hjem / Mine oppgaver – personlig oversikt og oppgavekø.</li>
+<li>CRM – Medlemmer, Verving, Kompetanse, Organisasjon, Tillitsvalgte.</li>
+<li>Økonomi – Oversikt, Fakturering, Regnskap, Budsjett, Nettbutikk, Givere.</li>
+<li>Drift – Arrangement, Møter, Kommunikasjon, Saksbehandling, Chat, Skjemaer, Loggføring.</li>
+<li>Innhold – Saksarkiv, Dokumenter, Publikasjoner, Intranett, Forum.</li>
+<li>Rapportering – Rapporter, Tilskudd, Benchmarking.</li>
+<li>System – Min side, Innstillinger, Integrasjoner, Marketplace.</li>
+</ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">7.3 Min side for medlemmer</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <ul class="spec-list">
+<li>Medlemsstatus, verv, kontingent.</li>
+<li>Kommende arrangementer hen er påmeldt.</li>
+<li>Personlig kompetanseoversikt med utløpsvarsler.</li>
+<li>Frivillighetstimer akkumulert med nivåmerker.</li>
+<li>Kvitteringer og fakturaer med skattefradragsoppsummering.</li>
+<li>Samtykker som kan oppdateres når som helst.</li>
+<li>GDPR-eksport av alle egne data med ett klikk.</li>
+</ul>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 08</span>
+        <span class="spec-chapter-title">8. Implementeringsfaser</span>
+        <span class="spec-chapter-meta">6 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        <div class="spec-intro">  <p>FriOrg er et stort konsept. Det skal bygges i faser med konkrete leveranser i hver fase. Vi foreslår følgende rekkefølge:</p></div>
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">8.1 Fase 1 — Fundament (måned 1–6)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Datamodell, kontakter, medlemskap, organisasjonsstruktur.</li>
+    <li>Innmelding, kontingent, betaling (Vipps, AvtaleGiro).</li>
+    <li>Min side med GDPR-eksport.</li>
+    <li>Outlook-add-in for medlemskontekst.</li>
+    <li>Power BI-rapporter på medlemstall.</li>
+  </ul>
+  <p>Mål: 5 pilotorganisasjoner kan ta i bruk FriOrg som medlemsregister og kontingentinnkreving.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">8.2 Fase 2 — Drift og kommunikasjon (måned 7–12)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Kommunikasjon (e-post, SMS, ticketing).</li>
+    <li>Arrangement med påmelding og betaling.</li>
+    <li>Saksarkiv og dokumenthåndtering.</li>
+    <li>Frivillighetstimer (mobilapp og QR).</li>
+    <li>Teams-app for tillitsvalgte.</li>
+  </ul>
+  <p>Mål: pilotorganisasjonene driver løpende drift i FriOrg.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">8.3 Fase 3 — Økonomi og rapportering (måned 13–18)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Innebygd regnskap eller dyp Tripletex/Visma/Fiken-integrasjon.</li>
+    <li>Frifond, momskompensasjon, årsrapportering.</li>
+    <li>Sponsor- og giverdatabase med §6-50-rapportering.</li>
+    <li>Revisor- og kontrollkomitéportal.</li>
+  </ul>
+  <p>Mål: organisasjonene kan gå et helt regnskapsår med FriOrg.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">8.4 Fase 4 — AI og differensiatorer (måned 19–24)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Copilot-integrasjon for saksoppsummering, søk og utkast.</li>
+    <li>Vedtektsmotor med regelvalidering.</li>
+    <li>Arvtaker- og overlappingsmodul.</li>
+    <li>Krise- og hendelseshåndtering.</li>
+  </ul>
+  <p>Mål: FriOrg er tydelig differensiert mot konkurrentene og lanseres bredt i markedet.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">8.5 Fase 5 — Plattform og økosystem (måned 25+)</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Multi-tenant for paraplyorganisasjoner.</li>
+    <li>Anonymisert benchmarking.</li>
+    <li>Integrasjons-marketplace.</li>
+    <li>Nordisk utvidelse: svensk Bolagsverket, dansk CVR, lokale tilskuddsordninger.</li>
+  </ul>
+  <p>Mål: FriOrg er en plattform, ikke bare et produkt — med eget økosystem og internasjonalt potensial.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">8.6 Avklaringer som bør tas tidlig</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+            <p><strong>Hvor dypt skal regnskapsmotoren gå? </strong></p>
+            <ul>
+            <li>Tanke: behold «godt nok» for små lag, integrer dypt mot Tripletex/Visma/Fiken for større. Konkurransen mot dedikerte regnskaps-ISV-er er tapt før den begynner.</li>
+            </ul>
+            <p><strong>Hvordan håndteres organisasjoner uten M365-tenant? </strong></p>
+            <ul>
+            <li>Tanke: hjelp dem med å sette opp Microsoft Nonprofit-lisenser (gratis for de fleste). Vi gir slipp på de som ikke vil – det er en bevisst markedsavgrensning.</li>
+            </ul>
+            <p><strong>Skal FriOrg være SaaS eller kunde-tenant? </strong></p>
+            <ul>
+            <li>Tanke: kunde-tenant. Hver organisasjon eier sine egne data, vi leverer applikasjon og oppdateringer.</li>
+            </ul>
+            <p><strong>Prismodell? </strong></p>
+            <ul>
+            <li>Tanke: per-medlem-pris med grunnpris, slik at små lag betaler lite og store betaler mer. Marketplace-tjenester prises separat.</li>
+            </ul>
+            <p><strong>AI og personvern: skal vi tilby Copilot-funksjonalitet uten at organisasjonen har sin egen Copilot-lisens? </strong></p>
+            <ul>
+            <li>Tanke: gjør Copilot til en konfigurerbar kostnadsdrivende modul som kan slås av – men den blir nok det viktigste salgsargumentet for større kunder.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 09</span>
+        <span class="spec-chapter-title">9. Konkurransebildet og strategisk posisjon</span>
+        <span class="spec-chapter-meta">4 delkapitler</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        
+        
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">9.1 Norske konkurrenter i dag</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Markedet for fagsystemer til frivillige organisasjoner er fragmentert og preget av aldrende systemer. De viktigste aktørene:</p>
+            <ul class="spec-list">
+              <li>StyreWeb – bredt brukt, men teknologisk gammeldags og lite integrert med moderne kontorpakker.</li>
+              <li>Cornerstone – bredde i moduler, men for mange vanskelig å bruke og har et komplisert oppsett.</li>
+              <li>Hypersys – solid medlemsregister, svak på saksbehandling og kommunikasjon.</li>
+              <li>WinOrg – funksjonsrikt og velletablert medlemsregister.</li>
+              <li>Egne Excel-baserte løsninger – overraskende vanlig blant små og mellomstore organisasjoner.</li>
+              <li>Sammensatte SaaS-stacks (HubSpot for CRM, Mailchimp for kommunikasjon, Tripletex for regnskap, etc.) – fungerer, men tungt å vedlikeholde.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">9.2 FriOrgs posisjonering</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>FriOrg konkurrerer ikke på pris eller funksjonsbredde alene. Vi konkurrerer på integrasjon, intelligens og kontekstuell forståelse av frivillighetens behov.</p>
+  <div class="spec-table-wrap"><table class="spec-table"><thead><tr><th>Område</th><th>Konkurrenter</th><th>FriOrg</th></tr></thead><tbody><tr><td>Plattform</td><td>Lukket SaaS</td><td>M365-tenant, kunden eier data</td></tr>
+<tr><td>AI</td><td>Lite/ingen</td><td>Copilot dypt integrert</td></tr>
+<tr><td>Kommunikasjon</td><td>Egen e-post, lite Outlook-integrasjon</td><td>Outlook-add-in, Teams-app</td></tr>
+<tr><td>Vedtekter</td><td>Manuell tolkning</td><td>★ Vedtektsmotor med regelvalidering</td></tr>
+<tr><td>Kunnskapsoverdragelse</td><td>Ikke håndtert</td><td>★ Arvtaker-modul</td></tr>
+<tr><td>Frivillighetstimer</td><td>Manuell Excel</td><td>★ Mobilapp + QR + autotellig</td></tr>
+<tr><td>Givere</td><td>Brevbasert eller eget verktøy</td><td>★ § 6-50 + giver-CRM</td></tr>
+<tr><td>Rapportering</td><td>Statiske maler</td><td>Power BI + benchmarking</td></tr>
+<tr><td>Hendelser/varsling</td><td>Excel + e-post</td><td>★ Audit-trail + anonym varsling</td></tr>
+<tr><td>Økosystem</td><td>Lukket</td><td>★ App marketplace</td></tr></tbody></table></div>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">9.3 Hva vi velger å ikke konkurrere på</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <ul class="spec-list">
+    <li>Egen videokonferanse — Teams er der allerede.</li>
+    <li>Egen chat — Teams igjen.</li>
+    <li>Egen filsynk — OneDrive.</li>
+    <li>Fullverdig regnskapssystem for større organisasjoner  — Tripletex, Visma, Fiken og PowerOffice er bunnsolide regnskapssystemer med mange års forsprang.</li>
+    <li>Markedsføringsautomatisering på enterprise-nivå — HubSpot/Marketo er gode etablerte løsninger.</li>
+  </ul>
+  <p>Disse områdene løses vi via integrasjon, ikke duplikat. Det frigjør ressurser til områdene som faktisk skiller oss ut.</p>
+          </div>
+        </details>
+
+        <details class="spec-section">
+          <summary class="spec-section-summary">
+            <span class="spec-section-title">9.4 Nordisk utvidelse</span>
+            <span class="spec-chevron"></span>
+          </summary>
+          <div class="spec-section-body">
+              <p>Norske systemer krysser sjelden landegrenser fordi de er bygget rundt Brreg, KID og norske tilskuddsordninger. FriOrg bør designes med dette i tankene fra dag én.</p>
+  <ul class="spec-list">
+    <li>Plug-in-arkitektur for landspesifikke registre: Brreg (NO), Bolagsverket (SE), CVR (DK).</li>
+    <li>Plug-in for landspesifikke tilskuddsordninger.</li>
+    <li>Lokal valutahåndtering, momslogikk og betalingsleverandører.</li>
+    <li>Språkstøtte: norsk bokmål, nynorsk, svensk, dansk fra første versjon.</li>
+  </ul>
+  <p>Skandinavisk marked er 4–5× det norske, og frivillighetssektoren har samme grunnstruktur og behov i alle tre land.</p>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="spec-chapter">
+      <summary class="spec-chapter-summary">
+        <span class="spec-chapter-num">§ 10</span>
+        <span class="spec-chapter-title">10. Avsluttende kommentarer</span>
+        <span class="spec-chapter-meta">Innledning</span>
+        <span class="spec-chevron"></span>
+      </summary>
+      <div class="spec-chapter-body">
+        <div class="spec-intro">  <p>Denne spesifikasjonen beskriver et ambisiøst, men gjennomførbart system. FriOrg er ikke «enda et medlemsregister». Det er en plattform som tar utgangspunkt i frivillighetens reelle behov — kunnskapsoverdragelse, vedtektsetterlevelse, dokumentasjon av frivillig innsats, kommunikasjon med givere — og bruker M365 som teknisk fundament for å levere noe ingen andre kan.</p>
+  <p>De ti viktigste differensierende funksjonene, oppsummert:</p>
+  <ul class="spec-list">
+    <li>Vedtektsmotor som validerer at vedtak, valg og innkallinger følger organisasjonens egne regler.</li>
+    <li>AI-assistent over saksarkivet med Copilot — søk, oppsummering, utkast.</li>
+    <li>Frivillighetstimer med mobilapp, QR og automatisk Frifond-kobling.</li>
+    <li>Outlook-add-in som viser medlemskontekst sidestilt e-post.</li>
+    <li>Arvtaker-modul som strukturerer overdragelse av verv.</li>
+    <li>Sponsor- og giverdatabase med §6-50-rapportering.</li>
+    <li>Krise- og hendelseshåndtering med anonym varsling.</li>
+    <li>Revisor- og kontrollkomitéportal med tidsbegrenset tilgang.</li>
+    <li>Multi-tenant for paraplyorganisasjoner.</li>
+    <li>Anonymisert benchmarking på tvers av kunder.</li>
+  </ul>
+  <p>Disse funksjonene posisjonerer FriOrg som «neste generasjon». De gir konkrete, målbare gevinster for kundene — sparte timer for sekretariatet, høyere tilskudd, færre habilitetsfeil, bedre kunnskapsoverdragelse, profesjonell givergjerning.</p>
+  <p><em>Frivillighetens største skjulte kostnad er kunnskap som forsvinner. FriOrg er et system som husker det organisasjonen glemmer.</em></p>
+  <p>Vi er klare for å gå fra konsept til prototype. Neste steg er å definere pilotgruppe, prise utviklingsløpet og bestemme finansieringsmodell.</p>
+  <br>
+  <p style="text-align: center;"><em>*** Slutt på konseptspesifikasjon – versjon 1.0 ***</em></p>
+        
+      </div>
+    </details>
+
+    <div class="spec-foot">
+      <span>Konseptutkast · April 2026</span>
+      <span><a href="FriOrg_Spesifikasjon.docx" download>Last ned hele spesifikasjonen som Word-dokument →</a></span>
+    </div>
+  </div>
+</section>
+
 
 <!-- Overview / pillars -->
 <section class="overview overview-grain">
@@ -776,6 +2386,15 @@
     </div>
   </div>
 </section>
+
+<script>
+  function expandAllSpec(){
+    document.querySelectorAll('.spec-chapter, .spec-section').forEach(d => d.open = true);
+  }
+  function collapseAllSpec(){
+    document.querySelectorAll('.spec-chapter, .spec-section').forEach(d => d.open = false);
+  }
+</script>
 
 </body>
 </html>
