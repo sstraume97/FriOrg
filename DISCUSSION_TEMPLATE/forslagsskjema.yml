@@ -1,0 +1,60 @@
+title: "Forslag: kort og beskrivende tittel"
+labels:
+  - "innspill"
+  - "forbedring"
+category: "Innspill og forbedringer"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Takk for at du deler innspill! Fyll ut feltene under så konkret som mulig.
+
+  - type: input
+    id: context
+    attributes:
+      label: "Hva gjelder innspillet?"
+      description: "F.eks. dokumentasjon, funksjon, rutine, prosess, nettside osv."
+      placeholder: "Kort beskrivelse av område/tema"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Beskriv innspillet eller forbedringsforslaget"
+      description: "Hva ønsker du å forbedre, og hvorfor?"
+      placeholder: "Forklar situasjonen, utfordringen og ønsket endring."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: "Har du konkrete forslag til løsning?"
+      description: "Beskriv gjerne ett eller flere konkrete forslag."
+      placeholder: "Forslag til tiltak, formuleringer, endringer i rutiner osv."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: "Opplevd betydning"
+      description: "Hvor stor forskjell vil dette gjøre etter din vurdering?"
+      options:
+        - "Liten forbedring"
+        - "Middels viktig"
+        - "Viktig"
+        - "Svært viktig"
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: "Annen relevant informasjon"
+      description: "Eventuelle eksempler, lenker, referanser eller tidligere diskusjoner."
+      placeholder: "Lenker, referanser, eksempler…"
+    validations:
+      required: false
