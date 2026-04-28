@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FriOrg — Fagsystem for frivillige organisasjoner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF7F2;
+    --paper-warm: #F5EFE5;
+    --ink: #1A1A1A;
+    --ink-soft: #2D2D2D;
+    --ink-muted: #6B6258;
+    --ink-faint: #A39A8E;
+    --rule: #E8E1D4;
+    --brand: #0F4C81;
+    --brand-deep: #083458;
+    --accent: #C45A11;
+    --accent-soft: #E89455;
+
+    --font-display: 'Fraunces', 'Georgia', serif;
+    --font-body: 'Newsreader', 'Georgia', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Fine grain noise texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+
+  /* ============ TOP BAND ============ */
+  .top-band {
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+    z-index: 2;
+  }
+
+  .top-band-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .top-band-left { display: flex; gap: 24px; align-items: center; }
+  .top-band-left strong { color: var(--ink); font-weight: 600; }
+  .top-band-right { display: flex; gap: 18px; }
+
+  .pulse-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 6px;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 40px 60px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 80px;
+    align-items: end;
+  }
+
+  .hero-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 28px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    animation: fadeUp 0.7s ease-out 0.1s both;
+  }
+  .hero-meta .divider {
+    width: 24px; height: 1px;
+    background: var(--ink-faint);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(72px, 9.5vw, 156px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 32px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    animation: fadeUp 0.8s ease-out 0.2s both;
+  }
+  .hero-title .accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--brand);
+  }
+
+  .hero-lede {
+    font-family: var(--font-body);
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 640px;
+    font-weight: 400;
+    animation: fadeUp 0.9s ease-out 0.35s both;
+  }
+  .hero-lede em { color: var(--brand); font-style: italic; }
+
+  .hero-side {
+    border-left: 1px solid var(--rule);
+    padding: 24px 0 24px 32px;
+    animation: fadeUp 1s ease-out 0.5s both;
+  }
+  .hero-side-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+  .hero-side-stat {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 6px;
+    font-variation-settings: "opsz" 96;
+  }
+  .hero-side-stat .unit {
+    font-size: 24px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .hero-side-text {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+  .hero-side-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .hero-side-row:last-child { border-bottom: none; }
+  .hero-side-row .key { color: var(--ink-muted); }
+  .hero-side-row .val { color: var(--ink); font-family: var(--font-mono); font-size: 12px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ DIVIDER ============ */
+  .section-rule {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 2;
+  }
+  .section-rule-inner {
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .section-rule-inner .num {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--brand);
+    font-variation-settings: "opsz" 96;
+    line-height: 1;
+    font-weight: 400;
+  }
+
+  /* ============ ARTIFACTS GRID ============ */
+  .artifacts {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+  }
+
+  .section-head {
+    margin-bottom: 56px;
+    max-width: 720px;
+  }
+  .section-head h2 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(36px, 4.8vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .section-head h2 em {
+    font-style: italic;
+    color: var(--brand);
+    font-weight: 400;
+  }
+  .section-head p {
+    font-size: 18px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+  }
+
+  .artifact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .artifact {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .artifact::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0;
+    height: 4px;
+    background: var(--brand);
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .artifact:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(15, 76, 129, 0.12);
+    border-color: var(--brand);
+  }
+
+  .artifact:hover::before { width: 100%; }
+
+  .artifact:hover .artifact-arrow {
+    transform: translate(6px, -6px);
+    color: var(--brand);
+  }
+
+  .artifact-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .artifact-tag .num {
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .artifact-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 38px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 14px;
+    font-variation-settings: "opsz" 96;
+  }
+  .artifact-title em {
+    font-style: italic;
+    color: var(--brand);
+  }
+
+  .artifact-kicker {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-bottom: 32px;
+  }
+
+  .artifact-meta {
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+  .artifact-meta .key {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 2px;
+  }
+  .artifact-meta .val {
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .artifact-foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+  }
+  .artifact-cta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .artifact-arrow {
+    width: 32px;
+    height: 32px;
+    color: var(--ink);
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    flex-shrink: 0;
+  }
+
+  /* ============ FOOTER / OVERVIEW ============ */
+  .overview {
+    position: relative;
+    z-index: 2;
+    background: var(--ink);
+    color: var(--paper);
+    margin-top: 60px;
+  }
+
+  .overview-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.85 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .overview-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 100px 40px 80px;
+    position: relative;
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+  }
+
+  .overview h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 48px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .overview h3 em { font-style: italic; color: var(--accent-soft); font-weight: 400; }
+
+  .overview p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(250, 247, 242, 0.78);
+    margin-bottom: 16px;
+  }
+
+  .overview-pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: rgba(250, 247, 242, 0.12);
+    border-top: 1px solid rgba(250, 247, 242, 0.12);
+    border-bottom: 1px solid rgba(250, 247, 242, 0.12);
+  }
+
+  .pillar {
+    background: var(--ink);
+    padding: 22px 0;
+    display: grid;
+    grid-template-columns: 60px 200px 1fr;
+    gap: 24px;
+    align-items: baseline;
+  }
+  .pillar-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+  }
+  .pillar-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--accent-soft);
+    font-weight: 400;
+  }
+  .pillar-text {
+    font-size: 15px;
+    color: rgba(250, 247, 242, 0.72);
+    line-height: 1.55;
+  }
+
+  .colophon {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(250, 247, 242, 0.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250, 247, 242, 0.5);
+  }
+  .colophon-mark {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: rgba(250, 247, 242, 0.7);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 880px) {
+    .top-band-inner { padding: 14px 24px; flex-wrap: wrap; gap: 12px; }
+    .top-band-left { gap: 14px; flex-wrap: wrap; }
+
+    .hero {
+      padding: 48px 24px 40px;
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .hero-lede { font-size: 18px; }
+    .hero-side {
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      padding: 32px 0 0;
+    }
+
+    .section-rule { padding: 0 24px; }
+
+    .artifacts { padding: 40px 24px 60px; }
+    .artifact-grid { grid-template-columns: 1fr; gap: 20px; }
+    .artifact { padding: 28px 24px; }
+    .artifact-title { font-size: 30px; }
+    .artifact-meta { grid-template-columns: 1fr; gap: 14px; }
+
+    .overview-inner { padding: 60px 24px 50px; }
+    .overview-grid { grid-template-columns: 1fr; gap: 32px; margin-bottom: 50px; }
+    .overview h3 { font-size: 34px; }
+
+    .pillar {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 20px 0;
+    }
+
+    .colophon { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top band -->
+<div class="top-band">
+  <div class="top-band-inner">
+    <div class="top-band-left">
+      <strong>FRIORG / KONSEPT</strong>
+      <span><span class="pulse-dot"></span>v1.0 · Apr 2026</span>
+      <span>Tøn / NO</span>
+    </div>
+    <div class="top-band-right">
+      <span>Funksjonell spesifikasjon</span>
+      <span>Interaktiv mockup</span>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div>
+    <div class="hero-meta">
+      <span>Fagsystem · Microsoft 365</span>
+      <span class="divider"></span>
+      <span>Frivillig sektor</span>
+    </div>
+    <h1 class="hero-title">
+      Et system<br>
+      <span class="accent">som husker</span><br>
+      det<br>
+      organisasjonen<br>
+      glemmer.
+    </h1>
+    <p class="hero-lede">
+      FriOrg er et fagsystem for frivillige og ideelle organisasjoner i Norge.
+      Bygget på Microsoft 365 — med <em>vedtektsmotor</em>, <em>AI-assistent</em>, og
+      strukturert kunnskapsoverdragelse mellom tillitsvalgte. Ti differensierende
+      funksjoner som ingen norske konkurrenter har i dag.
+    </p>
+  </div>
+
+  <aside class="hero-side">
+    <div class="hero-side-label">Konsept i tall</div>
+    <div class="hero-side-stat">28<span class="unit"> sider</span></div>
+    <div class="hero-side-text">Funksjonell spesifikasjon · 10 hovedkapitler · v1.0</div>
+
+    <div class="hero-side-row">
+      <span class="key">Visninger i mockup</span>
+      <span class="val">38</span>
+    </div>
+    <div class="hero-side-row">
+      <span class="key">Smart-funksjoner</span>
+      <span class="val">8 NYE</span>
+    </div>
+    <div class="hero-side-row">
+      <span class="key">Status</span>
+      <span class="val">Konseptutkast</span>
+    </div>
+    <div class="hero-side-row">
+      <span class="key">Plattform</span>
+      <span class="val">M365</span>
+    </div>
+  </aside>
+</section>
+
+<!-- Section divider -->
+<div class="section-rule">
+  <div class="section-rule-inner">
+    <span>§ 01 — Materialet</span>
+    <span class="num">01</span>
+    <span>To dokumenter</span>
+  </div>
+</div>
+
+<!-- Artifacts -->
+<section class="artifacts">
+  <div class="section-head">
+    <h2>To <em>perspektiver</em> på samme idé.</h2>
+    <p>Spesifikasjonen forklarer hvorfor og hva. Mockupen viser hvordan det føles. Begge er konseptutkast — designet for å diskuteres, ikke for å implementeres som de er.</p>
+  </div>
+
+  <div class="artifact-grid">
+
+    <!-- SPEC -->
+    <a href="FriOrg_Spesifikasjon.docx" class="artifact" download>
+      <div class="artifact-tag">
+        <span>● Dokument</span>
+        <span class="num">01 / 02</span>
+      </div>
+
+      <h3 class="artifact-title">
+        Funksjonell <em>spesifikasjon</em>
+      </h3>
+
+      <p class="artifact-kicker">
+        Strategisk konsept for et helhetlig fagsystem til norsk frivillig sektor.
+      </p>
+
+      <div class="artifact-meta">
+        <div>
+          <div class="key">Format</div>
+          <div class="val">Word · .docx</div>
+        </div>
+        <div>
+          <div class="key">Omfang</div>
+          <div class="val">28 sider · 10 kap.</div>
+        </div>
+        <div>
+          <div class="key">Versjon</div>
+          <div class="val">1.0 — utvidet</div>
+        </div>
+        <div>
+          <div class="key">Språk</div>
+          <div class="val">Norsk bokmål</div>
+        </div>
+      </div>
+
+      <div class="artifact-foot">
+        <span class="artifact-cta">Last ned dokument →</span>
+        <svg class="artifact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="6" y1="18" x2="18" y2="6"/>
+          <polyline points="9 6 18 6 18 15"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- MOCKUP -->
+    <a href="FriOrg_UI_Mockup.html" class="artifact">
+      <div class="artifact-tag">
+        <span>● Interaktiv</span>
+        <span class="num">02 / 02</span>
+      </div>
+
+      <h3 class="artifact-title">
+        UI-<em>mockup</em>
+      </h3>
+
+      <p class="artifact-kicker">
+        Klikkbar prototype med 38 visninger — fra dashboard til vedtektsmotor og AI-assistent.
+      </p>
+
+      <div class="artifact-meta">
+        <div>
+          <div class="key">Format</div>
+          <div class="val">HTML · single-file</div>
+        </div>
+        <div>
+          <div class="key">Visninger</div>
+          <div class="val">38 sider · 8 nye</div>
+        </div>
+        <div>
+          <div class="key">Navigasjon</div>
+          <div class="val">⌘K kommandopalett</div>
+        </div>
+        <div>
+          <div class="key">Tilstand</div>
+          <div class="val">Dummy-data</div>
+        </div>
+      </div>
+
+      <div class="artifact-foot">
+        <span class="artifact-cta">Åpne mockup →</span>
+        <svg class="artifact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <line x1="6" y1="18" x2="18" y2="6"/>
+          <polyline points="9 6 18 6 18 15"/>
+        </svg>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Overview / pillars -->
+<section class="overview overview-grain">
+  <div class="overview-inner">
+    <div class="overview-grid">
+      <div>
+        <h3>Hva som skiller FriOrg fra <em>«enda et medlemsregister»</em>.</h3>
+      </div>
+      <div>
+        <p>Norsk frivillighetssektor har et titalls fagsystemer i dag. De fleste løser det åpenbare — medlemsregister, kontingent, e-post.</p>
+        <p>FriOrg går videre. Versjon 1.0 introduserer ti funksjoner som adresserer smertepunkter ingen konkurrent har rørt: vedtektsetterlevelse, kunnskapsoverdragelse mellom tillitsvalgte, dokumentasjon av frivillig innsats, og direkte kobling til søknadsfondene som finansierer sektoren.</p>
+      </div>
+    </div>
+
+    <div class="overview-pillars">
+      <div class="pillar">
+        <div class="pillar-num">★ 01</div>
+        <div class="pillar-title">Vedtektsmotor</div>
+        <div class="pillar-text">Maskinleselige vedtekter som validerer at vedtak, valg og innkallinger følger organisasjonens egne regler. Ingen konkurrent har dette.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 02</div>
+        <div class="pillar-title">AI-assistent</div>
+        <div class="pillar-text">Microsoft Copilot dypt integrert. Naturlig språk-søk i saksarkivet, automatiske oppsummeringer, utkast til møtereferat.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 03</div>
+        <div class="pillar-title">Frivillighetstimer</div>
+        <div class="pillar-text">Mobilapp og QR-innsjekk dokumenterer dugnadsarbeid. Direkte kobling til Frifond og Sparebankstiftelse-søknader.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 04</div>
+        <div class="pillar-title">Arvtaker-modul</div>
+        <div class="pillar-text">Strukturert overdragelse av verv. Sjekklister, automatisk tilgangsoverføring, overlappingsperiode.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 05</div>
+        <div class="pillar-title">Outlook-integrasjon</div>
+        <div class="pillar-text">Sidepanel med medlemskontekst direkte i e-postvinduet. Ett-klikks-handlinger uten å bytte verktøy.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 06</div>
+        <div class="pillar-title">Giver-CRM</div>
+        <div class="pillar-text">§6-50-rapportering automatisk til Skatteetaten. Pipeline for storgivere som en B2B-salgsprosess.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 07</div>
+        <div class="pillar-title">Avvik og varsling</div>
+        <div class="pillar-text">Anonym varsling, kryptografisk audit-trail, automatisk eskalering. Møter krav fra arbeidsmiljøloven §2A-4.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 08</div>
+        <div class="pillar-title">Revisor-portal</div>
+        <div class="pillar-text">Selvbetjent, tidsbegrenset tilgang for revisor og kontrollkomité. 32 timer spart per revisjonsperiode.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 09</div>
+        <div class="pillar-title">Multi-tenant</div>
+        <div class="pillar-text">For paraplyorganisasjoner med tusenvis av underforeninger. Idrettsforbund, trossamfunn, fagforbund.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">★ 10</div>
+        <div class="pillar-title">Benchmarking</div>
+        <div class="pillar-text">Anonymisert sammenligning på tvers av kunder. Hver organisasjon ser hvor de står mot peers — k-anonymitet (≥5).</div>
+      </div>
+    </div>
+
+    <div class="colophon">
+      <span>Konseptutkast · ikke et produkt — ingen ekte data</span>
+      <span class="colophon-mark">FriOrg ✦ 2026</span>
+      <span>Tilbakemeldinger ønskes</span>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
