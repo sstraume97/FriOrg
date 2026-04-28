@@ -2,13 +2,13 @@ title: "Forslag: kort og beskrivende tittel"
 labels:
   - "innspill"
   - "forbedring"
-category: "Innspill og forbedringer"
+category: "Ideer"
 
 body:
   - type: markdown
     attributes:
       value: |
-        Takk for at du deler innspill! Fyll ut feltene under så konkret som mulig.
+        *Takk for at du deler innspill! Fyll ut feltene under så konkret som mulig.*
 
   - type: input
     id: context
@@ -24,9 +24,9 @@ body:
     attributes:
       label: "Beskriv innspillet eller forbedringsforslaget"
       description: "Hva ønsker du å forbedre, og hvorfor?"
-      placeholder: "Forklar situasjonen, utfordringen og ønsket endring."
+      placeholder: "Forklar gjerne situasjonen, utfordringen og ønsket endring."
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: suggestion
